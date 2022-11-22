@@ -1,5 +1,10 @@
 clear; 
 clc; 
+restoredefaultpath; 
+
+addpath("elastic/"); 
+addpath("hk_calculation/"); 
+addpath("hk_calculation/"); 
 addpath('~/Documents/repositories/Base_code/colormaps/colormaps_ander_biguri'); 
 
 %% Prepare model. 

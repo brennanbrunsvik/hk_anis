@@ -16,9 +16,9 @@ function [velocity, polarization] = hk_christof_radial_anis(...
 %    Symmetry axis is in positive z direction. 
     
 % get vsv, vsh, vpv, vph, for rays travlling parallel/perpendicular to symmetry direction
-[ ys,xs ] = VsvVsh_from_VsXi( vs, xi );
+[ ys,xs ] = hk_VsvVsh_from_VsXi( vs, xi );
 % fprintf('\nyx = %1.8f: xs = %1.8f\n', ys, xs)
-[ yp,xp ] = VpvVph_from_VpPhi( vp, phi );
+[ yp,xp ] = hk_VpvVph_from_VpPhi( vp, phi );
 
 % Maupin and Park, 2007
 A = rho .* xp.^2; % if no anis, xp just P-wave modulus
@@ -67,7 +67,7 @@ for iRay=[1:length(angAll)];
 
     zerVec = zeros(length(ang),1); 
     propDir = [ zerVec, sind(ang), -cosd(ang)]'; % ray propogation direct (sign doesn't matter). For some reason I drew propogation vector going down, positive is up. 
-    [vel,pvecs]=christof(propDir, cc, rho); % Phase velocity and particle motion vectors for three quasi waves. 
+    [vel,pvecs]=hk_christof(propDir, cc, rho); % Phase velocity and particle motion vectors for three quasi waves. 
     
     % Sort out which is p, sv, sh. 
     pInd = (abs(propDir' * pvecs)); % p is in same direction as propogation

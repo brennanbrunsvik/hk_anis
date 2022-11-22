@@ -26,8 +26,8 @@ hVec = linspace(options.hBounds(1), options.hBounds(2), options.hNum)';
 kVec = linspace(options.kBounds(1), options.kBounds(2), options.kNum) ; 
 
 % Assume ray path change is insignificant when adding anisotropy
-incAngVs = rayp2inc(rayp, vs        ) * ones(size(kVec)); 
-incAngVp = rayp2inc(rayp, vs * kVec ); %brb timit 8.1e-6
+incAngVs = hk_rayp2inc(rayp, vs        ) * ones(size(kVec)); 
+incAngVp = hk_rayp2inc(rayp, vs * kVec ); %brb timit 8.1e-6
 
 %% Effective vs and vp in anisotropic medium. 
 % Solve the Christoffel equation for each possible vp, each k. 
@@ -37,12 +37,12 @@ vpAn  = zeros(1, options.kNum);
 if ~ ((xi==1) && (phi==1) && (eta==1)) ; % Only use time consuming Christoffel equations if there is anisotropy. 
     for ik = 1:options.kNum;
         % Velocities for ray with vs incidence angle
-        [velVs,~] = christof_radial_anis(vs, vs*kVec(ik),... 
+        [velVs,~] = hk_christof_radial_anis(vs, vs*kVec(ik),... 
             xi, phi, eta, rho, incAngVs(ik)); 
         vsvAn(ik) = velVs(2); % Vsv for s ray 
     
         % Velocities for ray with vp incidence angle
-        [velVp,~] = christof_radial_anis(vs, vs*kVec(ik),...
+        [velVp,~] = hk_christof_radial_anis(vs, vs*kVec(ik),...
             xi, phi, eta, rho, incAngVp(ik)); 
         vpAn (ik) = velVp(1); % Vp for p ray
     end
