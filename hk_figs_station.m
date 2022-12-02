@@ -11,7 +11,34 @@ addpath('~/Documents/repositories/Base_code/colormaps/colormaps_ander_biguri');
 load('models/model_ta_kmsc.mat'); 
 sta_name = 'TA.KMSC'; 
 
-% Sort by ray parameter. Makes plotting more obvious. 
+%% Remove bad receiver functions
+
+% First row: Handle bad parent pulse. Second is for whole receiver function. 
+% First collumn: Cutoff for noramlized average cross correlation to other
+% receiver functions. Second collumn: Time window (absolute value)
+acparms = [0.95, 1; 0.55, inf]; % auto correlation parameters. These don't need to be perfect. It's just removing really bad receiver functions. 
+
+for iacremove = 1:2; 
+    nrf = size(rf,2); % Changes with each iacremove
+    ac = nan(nrf, nrf); % Autocorrelation matrix. 
+    twin = abs(tt) < acparms(iacremove,2); % Window within which is the parent pulse, to autocorrelate. 
+    ac_cutoff = acparms(iacremove,1); 
+    for irf = 1:nrf; 
+        for jrf = 1:nrf; % This is fast and done not often so don't worry about taking advantage of symmetry
+            rfi = rf(twin,irf); 
+            rfj = rf(twin,jrf); 
+            ac(irf, jrf) = rfi' * rfj ./ ...
+                ( sqrt(rfi' * rfi)*sqrt(rfj' * rfj) ); 
+        end
+    end
+    acs = sum(ac) ./ length(ac); % autocorrelation sum. Normalize it. 
+    ac_keep = acs > ac_cutoff; 
+    
+    rayp     = rayp(:,ac_keep     ); 
+    rf       = rf  (:,ac_keep     ); 
+end
+
+%% Sort by ray parameter. Makes plotting more obvious. 
 [rayp, sortp] = sort(rayp); 
 rf = rf(:,sortp); 
 
@@ -25,15 +52,21 @@ phi = 1./xi; % Flip, get h on top and v on bottom
 [Exi, H, K, t_pred_all_xi] = hk_anis_loop(...
     rf, tt, rayp, vsav, rhoav, xiav, phiav, etaav); % accounting for xi
 [E00, H, K, t_pred_all_00] = hk_anis_loop(...
-    rf, tt, rayp, vsav, rhoav, 1, 1, 1); % not accounting for anisotropy
+    rf, tt, rayp, vsav, rhoav,    1,     1,     1); % not accounting for anisotropy
 
 %% Figure out relevant predicted pulse timings. 
-[ihmax, ikmax] = find(Exi == max(Exi ,[], 'all')); 
+[ihmax, ikmax] = find(Exi == max(Exi ,[], 'all')); % If you were to optimize while accounting for anisotropy
 kmax = K(ikmax); 
 hmax = H(ihmax); 
 
-t_pred_xi = hk_pulse_time_interp(H, K, t_pred_all_xi, hmax, kmax); 
-t_pred_00 = hk_pulse_time_interp(H, K, t_pred_all_00, hmax, kmax); 
+[ihmaxiso, ikmaxiso] = find(E00 == max(E00 ,[], 'all')); % If you were to optimize while ignoring anisotropy
+kmaxiso = K(ikmaxiso); 
+hmaxiso = H(ihmaxiso); 
+
+t_pred_xi = hk_pulse_time_interp(H, K, t_pred_all_xi, hmax, kmax); % using xi
+t_pred_00 = hk_pulse_time_interp(H, K, t_pred_all_00, hmax, kmax); % O anisotropy, 
+t_pred_0b = hk_pulse_time_interp(H, K, t_pred_all_00, hmaxiso, kmaxiso); % 0 anisotropy but best model
+
 
 
 %% Plots. 
@@ -118,18 +151,61 @@ for irf = 1:nrf
 
     t_plot_xi = t_pred_xi(irf,:); 
     t_plot_00 = t_pred_00(irf,:)'; 
+    t_plot_0b = t_pred_0b(irf,:)'; 
 
     hnd_t_xi = scatter(...
         t_plot_xi', yshift + interp1(tt, rf(:,irf), t_plot_xi, 'linear'),...
         50, 'blue', '+', 'LineWidth', 2, 'DisplayName', 'With \xi'); % If using true parameters and anisotropic stack
     hnd_t_00 = scatter(...
         t_plot_00', yshift + interp1(tt, rf(:,irf), t_plot_00, 'linear'),...
-        50, 'red', '+', 'LineWidth', 2, 'DisplayName', 'No \xi'); % If using true parameters and isotropic stack
+        50, 'green', '+', 'LineWidth', 2, 'DisplayName', '\xi offset'); % If using true parameters and isotropic stack
+    hnd_t_0b = scatter(...
+        t_plot_0b', yshift + interp1(tt, rf(:,irf), t_plot_0b, 'linear'),...
+        50, 'red', '+', 'LineWidth', 2, 'DisplayName', 'Ignore \xi'); % If using parameters from optimizing the isotropic stack
+
     hnd_rf = plot(tt, yshift+rfi, 'k', 'linewidth', 0.75);
 end
 
 ylim([-10*yshift_const, yshift_const * (nrf+10)])
-lgd = legend([hnd_t_00, hnd_t_xi], 'Location', 'southeast'); 
+lgd = legend([hnd_t_xi, hnd_t_0b, hnd_t_00], 'Location', 'southeast'); 
 
 exportgraphics(gcf, sprintf('figs/rfs_%s.pdf',sta_name), ...
+    'ContentType', 'vector'); 
+
+%% Receiver function no ysfhit
+figure(203); clf; hold on; 
+set(gcf, 'pos', [2032 336 578 229]); 
+set(gca, 'LineWidth', 1.5, 'XGrid', 'on', 'XMinorTick', 'on'); box on; %grid on; 
+xlabel('Time (s)'); 
+title('Phase timing', 'FontWeight','normal'); 
+set(gca, 'YTick', []); 
+xlim([-1, 20])
+yshift_const = 0.00; 
+
+nrf = size(rf,2); 
+
+for irf = 1:nrf
+    yshift = irf * yshift_const; 
+    rfi = rf(:,irf);
+
+    t_plot_xi = t_pred_xi(irf,:); 
+    t_plot_00 = t_pred_00(irf,:)'; 
+    t_plot_0b = t_pred_0b(irf,:)'; 
+
+    hnd_t_xi = scatter(...
+        t_plot_xi', yshift + interp1(tt, rf(:,irf), t_plot_xi, 'linear'),...
+        50, 'blue', '+', 'LineWidth', 2, 'DisplayName', 'With \xi'); % If using true parameters and anisotropic stack
+    hnd_t_00 = scatter(...
+        t_plot_00', yshift + interp1(tt, rf(:,irf), t_plot_00, 'linear'),...
+        50, 'green', '+', 'LineWidth', 2, 'DisplayName', '\xi offset'); % If using true parameters and isotropic stack
+    hnd_t_0b = scatter(...
+        t_plot_0b', yshift + interp1(tt, rf(:,irf), t_plot_0b, 'linear'),...
+        50, 'red', '+', 'LineWidth', 2, 'DisplayName', 'Ignore \xi'); % If using parameters from optimizing the isotropic stack
+    hnd_rf = plot(tt, yshift+rfi, 'k', 'linewidth', 0.75);
+end
+
+ylim([-0.25, 0.5])
+lgd = legend([hnd_t_xi, hnd_t_0b, hnd_t_00], 'Location', 'southeast'); 
+
+exportgraphics(gcf, sprintf('figs/rfs_noyshift_%s.pdf',sta_name), ...
     'ContentType', 'vector'); 

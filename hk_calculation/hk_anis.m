@@ -15,6 +15,7 @@ function [Amap, hVec, kVec, t_pred] = hk_anis(...
         options.kNum = 201; 
         options.hNum = 200; 
         options.ifplot = false; 
+        options.rfinterp = 'cubic'; 
     end
 
 % Handle input values. 
@@ -64,8 +65,12 @@ t_pred = zeros(3, size(t_ps,1), size(t_ps,2) );
 t_pred(1,:,:) = t_ps; t_pred(2,:,:) = t_ppps; t_pred(3,:,:) = t_ppss; 
 
 %% sum weighted contributions from each phase type
-Amap =  phase_wts(1).*interp1(tt,RF,t_ps) ...
-      + phase_wts(2).*interp1(tt,RF,t_ppps) ...
-      - phase_wts(3).*interp1(tt,RF,t_ppss,[],0); % negative phase!
+% Amap =  phase_wts(1).*interp1(tt,RF,t_ps) ...
+%       + phase_wts(2).*interp1(tt,RF,t_ppps) ...
+%       - phase_wts(3).*interp1(tt,RF,t_ppss,[],0); % negative phase!
+
+Amap =  phase_wts(1).*interp1(tt,RF,t_ps, options.rfinterp) ...
+      + phase_wts(2).*interp1(tt,RF,t_ppps, options.rfinterp) ...
+      - phase_wts(3).*interp1(tt,RF,t_ppss,options.rfinterp,0); % negative phase!
 
 end
