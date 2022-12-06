@@ -145,6 +145,10 @@ yshift_const = 0.05;
 
 nrf = size(rf,2); 
 
+txt_t_xi = '$t(H_{\xi}, \kappa_{\xi}, \xi)$'; 
+txt_t_0b = '$t(H_{1}, \kappa_{1}, 1)$'; 
+txt_t_00 = '$t(H_{\xi}, \kappa_{\xi}, 1)$'; 
+
 for irf = 1:nrf
     yshift = irf * yshift_const; 
     rfi = rf(:,irf);
@@ -155,19 +159,23 @@ for irf = 1:nrf
 
     hnd_t_xi = scatter(...
         t_plot_xi', yshift + interp1(tt, rf(:,irf), t_plot_xi, 'linear'),...
-        50, 'blue', '+', 'LineWidth', 2, 'DisplayName', 'With \xi'); % If using true parameters and anisotropic stack
+        50, 'blue', '+', 'LineWidth', 2, 'DisplayName', txt_t_xi); % If using true parameters and anisotropic stack
     hnd_t_00 = scatter(...
         t_plot_00', yshift + interp1(tt, rf(:,irf), t_plot_00, 'linear'),...
-        50, 'green', '+', 'LineWidth', 2, 'DisplayName', '\xi offset'); % If using true parameters and isotropic stack
+        50, 'green', '+', 'LineWidth', 2, 'DisplayName', txt_t_00); % If using true parameters and isotropic stack
     hnd_t_0b = scatter(...
         t_plot_0b', yshift + interp1(tt, rf(:,irf), t_plot_0b, 'linear'),...
-        50, 'red', '+', 'LineWidth', 2, 'DisplayName', 'Ignore \xi'); % If using parameters from optimizing the isotropic stack
+        50, 'red', '+', 'LineWidth', 2, 'DisplayName', txt_t_0b); % If using parameters from optimizing the isotropic stack
 
     hnd_rf = plot(tt, yshift+rfi, 'k', 'linewidth', 0.75);
 end
 
 ylim([-10*yshift_const, yshift_const * (nrf+10)])
-lgd = legend([hnd_t_xi, hnd_t_0b, hnd_t_00], 'Location', 'southeast'); 
+lgd = legend([hnd_t_xi, hnd_t_0b, hnd_t_00], 'Location', 'southeast',...
+    'Interpreter','latex', 'fontsize', 13); 
+
+text(1, -3*yshift_const     , sprintf('$p=%1.2f$',rayp(1  )), 'interpreter', 'latex' ); % State ray parameter. If it's seconds per degree, should have something like 4.5 to 9. Seconds per kilometer should be something like 0.04 to 0.08 (See Zhu and Kanamori 2000). 
+text(1, (nrf+5)*yshift_const, sprintf('$p=%1.2f$',rayp(end)), 'interpreter', 'latex'  ); 
 
 exportgraphics(gcf, sprintf('figs/rfs_%s.pdf',sta_name), ...
     'ContentType', 'vector'); 
@@ -194,18 +202,20 @@ for irf = 1:nrf
 
     hnd_t_xi = scatter(...
         t_plot_xi', yshift + interp1(tt, rf(:,irf), t_plot_xi, 'linear'),...
-        50, 'blue', '+', 'LineWidth', 2, 'DisplayName', 'With \xi'); % If using true parameters and anisotropic stack
+        50, 'blue', '+', 'LineWidth', 2, 'DisplayName', txt_t_xi); % If using true parameters and anisotropic stack
     hnd_t_00 = scatter(...
         t_plot_00', yshift + interp1(tt, rf(:,irf), t_plot_00, 'linear'),...
-        50, 'green', '+', 'LineWidth', 2, 'DisplayName', '\xi offset'); % If using true parameters and isotropic stack
+        50, 'green', '+', 'LineWidth', 2, 'DisplayName', txt_t_00); % If using true parameters and isotropic stack
     hnd_t_0b = scatter(...
         t_plot_0b', yshift + interp1(tt, rf(:,irf), t_plot_0b, 'linear'),...
-        50, 'red', '+', 'LineWidth', 2, 'DisplayName', 'Ignore \xi'); % If using parameters from optimizing the isotropic stack
+        50, 'red', '+', 'LineWidth', 2, 'DisplayName', txt_t_0b); % If using parameters from optimizing the isotropic stack
     hnd_rf = plot(tt, yshift+rfi, 'k', 'linewidth', 0.75);
 end
 
+
 ylim([-0.25, 0.5])
-lgd = legend([hnd_t_xi, hnd_t_0b, hnd_t_00], 'Location', 'southeast'); 
+lgd = legend([hnd_t_xi, hnd_t_0b, hnd_t_00], 'Location', 'northeast',...
+    'Interpreter','latex', 'fontsize', 12); 
 
 exportgraphics(gcf, sprintf('figs/rfs_noyshift_%s.pdf',sta_name), ...
     'ContentType', 'vector'); 
