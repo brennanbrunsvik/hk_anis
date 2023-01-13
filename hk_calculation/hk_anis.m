@@ -32,25 +32,35 @@ incAngVp = hk_rayp2inc(rayp, vs * kVec ); %brb timit 8.1e-6
 
 %% Effective vs and vp in anisotropic medium. 
 % Solve the Christoffel equation for each possible vp, each k. 
-vsvAn = zeros(1, options.kNum); % Row vector. h is collumn vector. 
-vpAn  = zeros(1, options.kNum); 
+[vs_out] = hk_christof_radial_anis_noang(vs, vs*kVec,... 
+            xi, phi, eta, rho, incAngVs); 
+vsvAn = vs_out(2,:); 
 
-if ~ ((xi==1) && (phi==1) && (eta==1)) ; % Only use time consuming Christoffel equations if there is anisotropy. 
-    for ik = 1:options.kNum;
-        % Velocities for ray with vs incidence angle
-        [velVs,~] = hk_christof_radial_anis(vs, vs*kVec(ik),... 
-            xi, phi, eta, rho, incAngVs(ik)); 
-        vsvAn(ik) = velVs(2); % Vsv for s ray 
-    
-        % Velocities for ray with vp incidence angle
-        [velVp,~] = hk_christof_radial_anis(vs, vs*kVec(ik),...
-            xi, phi, eta, rho, incAngVp(ik)); 
-        vpAn (ik) = velVp(1); % Vp for p ray
-    end
-else % If there's no anisotropy, we already know vp and vsv. 
-    vsvAn(:) = vs;
-    vpAn (:) = vs * kVec; 
-end
+[vp_out] = hk_christof_radial_anis_noang(vs, vs*kVec,... 
+            xi, phi, eta, rho, incAngVp); 
+vpAn  = vp_out(1,:); 
+
+%%% Commented out here is a (slower) option to do the full Christoffel
+%%% matrix solution for each ray. We don't need ray angles, so this isn't
+%%% useful. 
+% % % % % vsvAn = zeros(1, options.kNum); % Row vector. h is collumn vector. 
+% % % % % vpAn  = zeros(1, options.kNum); 
+% % % % % if ~ ((xi==1) && (phi==1) && (eta==1)) ; % Only use time consuming Christoffel equations if there is anisotropy. 
+% % % % %     for ik = 1:options.kNum;
+% % % % %         % Velocities for ray with vs incidence angle
+% % % % %         [velVs,~] = hk_christof_radial_anis(vs, vs*kVec(ik),... 
+% % % % %             xi, phi, eta, rho, incAngVs(ik)); 
+% % % % %         vsvAn(ik) = velVs(2); % Vsv for s ray 
+% % % % %     
+% % % % %         % Velocities for ray with vp incidence angle
+% % % % %         [velVp,~] = hk_christof_radial_anis(vs, vs*kVec(ik),...
+% % % % %             xi, phi, eta, rho, incAngVp(ik)); 
+% % % % %         vpAn (ik) = velVp(1); % Vp for p ray
+% % % % %     end
+% % % % % else % If there's no anisotropy, we already know vp and vsv. 
+% % % % %     vsvAn(:) = vs;
+% % % % %     vpAn (:) = vs * kVec; 
+% % % % % end
 
 %% Calculate phase arrival times. 
 % using equations 2-4 from Zhu and Kanamori 2000
