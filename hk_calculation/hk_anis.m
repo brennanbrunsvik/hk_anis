@@ -17,15 +17,18 @@ function [Amap, hVec, kVec, t_pred] = hk_anis(...
         options.ifplot = false; 
         options.rfinterp = 'cubic'; 
     end
+% Make an anisotropic HK stack. 
+% TODO describe inputs and outputs. 
 
 % Handle input values. 
 phase_wts = options.phase_wts / sum(options.phase_wts); % Normalize in case these didn't sum to 1 
-rayp = rayp/111.1949; 
+rayp = rayp/111.1949; % change ray parameter units from/to? seconds/degree and seconds/km
 
-%% Make grids of H and K
+%% Make grids of H and K to search over. 
 hVec = linspace(options.hBounds(1), options.hBounds(2), options.hNum)';
 kVec = linspace(options.kBounds(1), options.kBounds(2), options.kNum) ; 
 
+% Find incidence angles for seperate vs and vp rays. 
 % Assume ray path change is insignificant when adding anisotropy
 incAngVs = hk_rayp2inc(rayp, vs        ) * ones(size(kVec)); 
 incAngVp = hk_rayp2inc(rayp, vs * kVec ); %brb timit 8.1e-6
@@ -42,7 +45,7 @@ vpAn  = vp_out(1,:);
 
 %%% Commented out here is a (slower) option to do the full Christoffel
 %%% matrix solution for each ray. We don't need ray angles, so this isn't
-%%% useful. 
+%%% needed for now. 
 % % % % % vsvAn = zeros(1, options.kNum); % Row vector. h is collumn vector. 
 % % % % % vpAn  = zeros(1, options.kNum); 
 % % % % % if ~ ((xi==1) && (phi==1) && (eta==1)) ; % Only use time consuming Christoffel equations if there is anisotropy. 

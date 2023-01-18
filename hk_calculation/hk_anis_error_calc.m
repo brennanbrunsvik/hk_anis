@@ -1,4 +1,5 @@
-function [Amap, hVec, kVec, t_pred] = hk_anis_error(...
+function [p_change, p_change_t_ps, p_change_t_ppss, p_change_t_ppps,...
+    kVec, hVec] = hk_anis_error(...
     rayp, vs, rho, xi, phi, eta, options)  
     arguments
         rayp
@@ -14,7 +15,12 @@ function [Amap, hVec, kVec, t_pred] = hk_anis_error(...
         options.hNum = 200; 
         options.ifplot = false; 
         options.rfinterp = 'cubic'; 
+        options.take_mean = true; 
     end
+% Modified version of HK anis, designed to analytically calculate errors
+% from ignoring anisotropy. 
+% Does not actually make HK stack. 
+% TODO describe inputs and outputs. 
 
 % Handle input values. 
 phase_wts = options.phase_wts / sum(options.phase_wts); % Normalize in case these didn't sum to 1 
@@ -63,32 +69,16 @@ hVec_iso = + phase_wts(3) .* hVec_ppss ... % use plus for the third phase weight
 
 fpchange = @(f0, f1)100*(f1-f0)./f0; 
 
-p_change = fpchange(hVec_iso, hVec); 
-p_change_t_ps = fpchange(hVec_ps, hVec); 
+p_change        = fpchange(hVec_iso, hVec); 
+p_change_t_ps   = fpchange(hVec_ps, hVec); 
 p_change_t_ppps = fpchange(hVec_ppps, hVec); 
 p_change_t_ppss = fpchange(hVec_ppss, hVec); 
 
-figure(1); clf; hold on; 
-plot(hVec, p_change); 
-xlabel('H true (km)'); 
-ylabel('Percent change'); 
-title('Percent change H, for different K'); 
-
-figure(2); clf; hold on; 
-xlabel('$\kappa$', 'Interpreter', 'latex'); 
-ylabel('Percent error H'); 
-title('H error analytical', 'FontWeight','normal'); 
-LW = 1.5; 
-box on; grid on; 
-set(gca, 'LineWidth', 1.5); 
-plot(kVec, mean(p_change, 1)       , 'DisplayName', 'Average', ...
-    'LineWidth', LW); 
-plot(kVec, mean(p_change_t_ps,1 )  , 'DisplayName', 'Ps',      ...
-    'LineWidth', LW);   
-plot(kVec, mean(p_change_t_ppss,1 ), 'DisplayName', 'PpSs' ,   ...
-    'LineWidth', LW);   
-plot(kVec, mean(p_change_t_ppps,1 ), 'DisplayName', 'PpPs' ,   ...
-    'LineWidth', LW);  
-legend('location', 'best'); 
+if options.take_mean; 
+    p_change        = mean(p_change       , 1); 
+    p_change_t_ps   = mean(p_change_t_ps  , 1); 
+    p_change_t_ppps = mean(p_change_t_ppps, 1); 
+    p_change_t_ppss = mean(p_change_t_ppss, 1); 
+end
 
 end

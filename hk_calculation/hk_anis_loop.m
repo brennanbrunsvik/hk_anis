@@ -16,11 +16,12 @@ function [Amap, hVec, kVec, t_pred] = hk_anis_loop(...
         options.hNum = 200; 
         options.ifplot = false; 
     end
-
+% Wrapper to loop over each receiver function, make anisotropic 
+% HK stacks, then sum them. 
 
 nrf = size(rf, 2); 
-AmapAll = zeros(nrf,    options.hNum, options.kNum); 
-t_pred  = zeros(nrf, 3, options.hNum, options.kNum); 
+AmapAll = zeros(nrf,    options.hNum, options.kNum); % Energy (amplitude) map for HK Stack. 
+t_pred  = zeros(nrf, 3, options.hNum, options.kNum); % Predicted timings for different pulses. 
 
 nrf = length(rayp); 
 for irf = 1:nrf; 
@@ -34,10 +35,10 @@ for irf = 1:nrf;
         'ifplot',options.ifplot);  
 end
 
+% Sum energy maps across receiver functions. 
 Amap = zeros(size(AmapAll,2), size(AmapAll,3) ) ; 
 Amap(:,:) = sum(AmapAll, 1); 
 Amap = Amap / max(max(Amap)); 
-
 % interpn(H, K, t_pred00() )
 
 end
