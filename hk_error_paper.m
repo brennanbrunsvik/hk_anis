@@ -63,7 +63,7 @@ nexttile(); box on; set(gca, 'LineWidth', 1.5); caxis(clim_man);
 contourf(kVec', rayp_all, toabs(p_change'), clines); 
 caxis(clim_man); 
 colormap(cmap_cust); 
-ylabel('p (s/km)'); 
+ylabel('p (s/degree)'); 
 title('Average', 'fontweight', 'normal'); 
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  caxis(clim_man); 
@@ -76,7 +76,7 @@ nexttile(); box on; set(gca, 'LineWidth', 1.5);  caxis(clim_man);
 contourf(kVec', rayp_all, toabs(p_change_t_ppss'), clines);  
 caxis(clim_man); 
 xlabel('\kappa'); 
-ylabel('p (s/km)'); 
+ylabel('p (s/degree)'); 
 title('PpSs, PsPs', 'fontweight', 'normal'); 
 
 

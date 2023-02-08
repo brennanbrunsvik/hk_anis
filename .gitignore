@@ -1,5 +1,8 @@
-
-*.asv
-*.pdf
-.DS_Store
-*.jpeg
+**.asv
+**.pdf
+**.DS_Store
+**.jpeg
+**.pdf
+**.png
+*itr
+*itt
