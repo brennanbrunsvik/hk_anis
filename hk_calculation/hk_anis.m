@@ -22,7 +22,7 @@ function [Amap, hVec, kVec, t_pred] = hk_anis(...
 
 % Handle input values. 
 phase_wts = options.phase_wts / sum(options.phase_wts); % Normalize in case these didn't sum to 1 
-rayp = rayp/111.1949; % change ray parameter units from/to? seconds/degree and seconds/km
+rayp = rayp/111.1949; % change ray parameter units from seconds/degree to seconds/km
 
 %% Make grids of H and K to search over. 
 hVec = linspace(options.hBounds(1), options.hBounds(2), options.hNum)';

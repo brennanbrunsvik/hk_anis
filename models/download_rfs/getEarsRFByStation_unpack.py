@@ -1,5 +1,5 @@
 #!/bin/python
-#
+#%%
 # Product: EARS (Earthscope Automated Receiver Survey)
 # 
 # Script: getEarsRFByStation.py

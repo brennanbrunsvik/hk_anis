@@ -70,7 +70,7 @@ hVec_iso = + phase_wts(3) .* hVec_ppss ... % use plus for the third phase weight
 fpchange = @(f0, f1)100*(f1-f0)./f0; 
 
 p_change        = fpchange(hVec_iso, hVec); 
-p_change_t_ps   = fpchange(hVec_ps, hVec); 
+p_change_t_ps   = fpchange(hVec_ps , hVec); 
 p_change_t_ppps = fpchange(hVec_ppps, hVec); 
 p_change_t_ppss = fpchange(hVec_ppss, hVec); 
 

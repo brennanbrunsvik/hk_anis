@@ -6,3 +6,5 @@
 **.png
 *itr
 *itt
+**/results/**.mat
+models/download_rfs/Ears/**

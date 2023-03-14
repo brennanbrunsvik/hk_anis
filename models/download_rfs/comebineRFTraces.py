@@ -18,7 +18,7 @@ def combineRFTraces(trPath = './', oneDModel = "ak135",
     # showPlots = False
     # trPath = './Ears/gauss_2.5/US.CEH/' # Path where receiver function traces are stored. 
     model = TauPyModel(model=oneDModel)
-    #%% Gather all receiver functions and maybe plot them. Convert them to a simple matlab file. 
+    # Gather all receiver functions and maybe plot them. Convert them to a simple matlab file. 
 
     traces = read(trPath+'*.it*')
 
@@ -71,6 +71,8 @@ def combineRFTraces(trPath = './', oneDModel = "ak135",
         rayParamSecDeg = arrivalP.ray_param_sec_degree 
         incidenceAngleP = arrivalP.incident_angle
 
+        # tri.stats.sac['user2'] # This is ray parameter from the sac file... didn't realize before it was there. see: kusers in the sac dictionary. tri.stats.sac['kuser2']. 
+
         if tri.stats.channel == 'ITT': # Transverse channel. Not of interest right now brb2022.02.25
             rfTStack += rr
             cPlot = 'blue'
@@ -96,6 +98,9 @@ def combineRFTraces(trPath = './', oneDModel = "ak135",
                 tri.stats.channel, str(tri.stats.starttime.date), incidenceAngleP    )
             ax.annotate(annotString, 
                 [.6 * max(tt), itr*scaleShiftY + 0.01])
+
+    stla = tri.stats.sac['stla']
+    stlo = tri.stats.sac['stlo']
 
 
     # # Plot stacked RF
@@ -123,7 +128,7 @@ def combineRFTraces(trPath = './', oneDModel = "ak135",
     indT0 = np.argmax(rfRStack)# Index where I think time = 0 should be
     ttShifted = tt - tt[indT0]
     rfDict = {'rf': rfRArr, 'tt':ttShifted, 
-        'rayParmSecDeg':rfRayParm, 'incAngP':rfIncAng}
+        'rayParmSecDeg':rfRayParm, 'incAngP':rfIncAng, 'stla':stla, 'stlo':stlo}
     savemat(trPath + 'rfArr.mat', rfDict)
 
     # #%% Spectrograms of receiver functions. Just for fun. 
@@ -164,3 +169,9 @@ def combineRFTraces(trPath = './', oneDModel = "ak135",
     # combineRFTraces()
 
     return rfDict
+    # return []
+
+#%
+if __name__ == '__main__': 
+    combineRFTraces(trPath = './Ears/gauss_2.5/US.ELK_junk/')
+# %%
