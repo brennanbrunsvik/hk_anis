@@ -29,6 +29,7 @@ zmoh = 34; % ELK estimated at 30 km. Use this for some rough approximations, not
 rhoest = 2.83; 
 % eta = 1; 
 eta = 1; 
+phi_xi_const = 1; % define 1/phi = phi_xi_const * xi. Still should double check how this is implimented in code below, brb2023.03.21
 
 kNum = 510; 
 hNum = 500; 
@@ -73,7 +74,7 @@ z = 1:100;
 z = z'; 
 xi = ones(size(z)) .* xi; 
 eta = ones(size(z)) .* eta; 
-phi = 1./xi; % See paper for description of this relationship. 
+phi = 1./phi_xi_const .* 1./xi; % See paper for description of this relationship. 
 nz = length(z); 
 sz = size(z); 
 rho = rhoest * ones(sz); 
