@@ -4,6 +4,7 @@ Take seismic receiver functions and make HK stacks, while accounting for radial 
 
 - hk_ears.m: Make anisotropic HK stack on receiver functions from the IRIS-EARS dataset. Can loop over many stations, or just do one station. You can modify this to use receiver functions from any station. 
   - hk_ta_kmsc.m: Temporary, make anisotropic HK stack for a unique format station, data output was from our MCMC work. 
+  - Note that we do not include the receiver function waveforms from IRIS-EARS. Instead, include the code to download it. For simple instructions, see models/download_rfs/README.txt. 
 
 - hk_error_ray_param.m: Calculate amount of error for a receiver function as a function of ray parameter. 
 
