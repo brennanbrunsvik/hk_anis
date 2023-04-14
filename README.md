@@ -1,9 +1,9 @@
 # Make HK stacks that incorporate radial anisotropy
 
-Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper XXXXXXXXXXXXXXXXXXXXXX. Please feel free to contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. We would be very happy if somebody wanted to convert all of this to Python. 
+Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper "Radial anisotropy in receiver function H−κ stacks" by Brennan Brunsvik and Zach Eilon, submitted to SRL on 2023/04/13. Please feel free to contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. We would be very happy if somebody wanted to convert all of this to Python. 
 
 - hk_ears.m: Make anisotropic HK stack on receiver functions from the IRIS-EARS dataset. Can loop over many stations, or just do one station. You can modify this to use receiver functions from any station. 
--- hk_ta_kmsc.m: Temporary, make anisotropic HK stack for a unique format station, data output was from our MCMC work. 
+  - hk_ta_kmsc.m: Temporary, make anisotropic HK stack for a unique format station, data output was from our MCMC work. 
 
 - hk_error_ray_param.m: Calculate amount of error for a receiver function as a function of ray parameter. 
 
