@@ -12,9 +12,9 @@ addpath('/Users/brennanbrunsvik/Documents/repositories/Base_code/colormaps/redbl
 
 
 
-raypNum = 17; 
-kNum = 15; 
-hNum = 16; 
+raypNum = 300; 
+kNum = 150; 
+hNum = 160; 
 
 rayp_all = linspace(4, 9, raypNum); 
 rayp_conv = @(r)r/(6371 * 2 * pi/360); 
@@ -171,6 +171,6 @@ set(cbar, 'Position', cbar_pos);
 caxis(clim_man); 
 
 
-exportgraphics(gcf, sprintf('figs/timing_error_xi%1.2f.pdf', xi)); 
+exportgraphics(gcf, sprintf('figs/timing_error_xi%1.2f.jpeg', xi), 'Resolution', 600); 
 
 

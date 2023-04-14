@@ -34,6 +34,8 @@ f_sta_list = './models/download_rfs/stationList.csv';
 sta_name_all = string(table2array(readtable(f_sta_list))); 
 sta_name_all = sta_name_all(:,1) + '.' + sta_name_all(:,2); 
 
+sta_name_all = "AE.X16A"; warning('Only doing AE.X16A')
+
 for ista = 1:size(sta_name_all, 1); 
     fprintf('%3.0f sta', ista); 
     sta_name = sta_name_all(ista); 
@@ -177,23 +179,36 @@ for ista = 1:size(sta_name_all, 1);
         nexttile(); hold on; box on; 
         exi = Exi_all(ihmax, :, :); 
         exi = reshape(exi, kNum, xiNum); 
-        contourf(K, XI, exi', cnt_lvl); 
-        plot(K(ikmax), XI(iximax), '^'); 
-        xlabel('K'); ylabel('\xi'); 
+        contourf(XI, K, exi, cnt_lvl); 
+        plot(XI(iximax), K(ikmax), '^'); 
+        xlabel('\xi'); ylabel('\kappa'); 
         
         nexttile(); hold on; box on; 
         exi = Exi_all(:, ikmax, :); 
         exi = reshape(exi, hNum, xiNum); 
-        contourf(H, XI, exi', cnt_lvl); 
-        plot(H(ihmax), XI(iximax), '^'); 
-        xlabel('H'); ylabel('\xi'); 
+        contourf(XI, H, exi, cnt_lvl); 
+        plot(XI(iximax), H(ihmax), '^'); 
+        xlabel('\xi'); ylabel('H (km)'); 
+        set(gca, 'ydir', 'reverse'); 
         
         nexttile(); hold on; box on; 
         exi = Exi_all(:, :, iximax); 
         exi = reshape(exi, hNum, kNum); 
-        contourf(H, K, exi', cnt_lvl); 
-        plot(H(ihmax), K(ikmax), '^'); 
-        xlabel('H'); ylabel('K'); 
+        contourf(K, H, exi, cnt_lvl); 
+        plot(K(ikmax), H(ihmax), '^'); 
+        xlabel('\kappa'); ylabel('H (km)'); 
+        set(gca, 'ydir', 'reverse'); 
+%         cmp = flipud(jet(length(cnt_lvl)-1 )); 
+%         colormap(cmp); 
+%         parula()
+        %   
+%         cmp = parula(); 
+        cbr = colorbar(); 
+%         set(cbr.Label.String, 'E/E_{max}')
+        cbr.Label.String = 'E/E_{max}'; 
+        colormap(viridis()); 
+
+%         caxis([min(cnt_lvl), max(cnt_lvl)]); 
         
         exportgraphics(gcf, sprintf('figs/%s_tradeoff.jpeg',sta_name)...
             , 'Resolution', 200); 

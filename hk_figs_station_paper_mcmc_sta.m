@@ -1,10 +1,9 @@
-% Do anisotropic HK stacks for a particular station. 
-% Make figures for use in the paper. 
+%%% brb 2023.04.04 This script is an amalgamation of hk_figs_station_paper
+%%% and hk_figs_station_paper_newsta. It's ugly, it's a quick way to use
+%%% MCMC model outputs with the current HK code. This script will probably
+%%% not be valid once hk_figs_station....m is modified. 
 
-% TODO I used the phrase "autocorrelation" but mean zero-lag
-% cross-correlation
-% TODO plotting receiver function pulse timings is slow. 
-
+%%% From old
 clear; 
 clc; 
 restoredefaultpath; 
@@ -15,21 +14,9 @@ addpath("hk_calculation/");
 addpath('~/Documents/repositories/Base_code/colormaps/colormaps_ander_biguri'); 
 
 %% Prepare model. 
-sta_name = 'AE.X16A'; 
-f = load("models/download_rfs/Ears/gauss_2.5/"+sta_name+"/rfArr.mat"); 
-rf = f.rf; tt = f.tt; rayParmSecDeg = f.rayParmSecDeg; incAngP = f.incAngP; 
-lat = f.stla; lon = f.stlo; 
-rayp = rayParmSecDeg; 
-% load('models/model_ta_kmsc.mat'); 
-
-xi = 1.33; 
-VP = 6.276; %LB BMN values, mostly the same as for US ELK
-VS = 1/1.76 * VP; % Specifying because I don't remember which we hold constant. 
-zmoh = 34; % ELK estimated at 30 km. Use this for some rough approximations, not so important. 
-rhoest = 2.83; 
-% eta = 1; 
-eta = 1; 
-phi_xi_const = 1; % define 1/phi = phi_xi_const * xi. Still should double check how this is implimented in code below, brb2023.03.21
+load('models/model_ta_kmsc.mat'); 
+sta_name = 'TA.KMSC'; 
+%%% End from old
 
 kNum = 510; 
 hNum = 500; 
@@ -37,6 +24,8 @@ hNum = 500;
 plot_true = true; 
 hBounds = [10, 55]; 
 
+
+%%% From new
 %% Remove bad receiver functions. 
 % Remove those that have small zero-lag cross-correlation to other receiver functions. 
 
@@ -85,22 +74,18 @@ subplot(2,1,2); hold on;
 title('Kept'); 
 plot(tt, rf); 
 xlim([-5, 40]); 
+%%% End from new
 
+%%% From old
 %% Sort by ray parameter. Makes plotting more obvious. 
 [rayp, sortp] = sort(rayp); 
 rf = rf(:,sortp); 
 
-z = 1:100; 
-z = z'; 
-xi = ones(size(z)) .* xi; 
-eta = ones(size(z)) .* eta; 
-phi = 1./phi_xi_const .* 1./xi; % See paper for description of this relationship. 
-nz = length(z); 
-sz = size(z); 
-rho = rhoest * ones(sz); 
-vs = VS * ones(sz); 
-vp = VP * ones(sz); 
+phi = 1./xi; % See paper for description of this relationship. 
+%%% End from old
 
+
+%%% Below here should be same as hk_figs_station_paper_newsta.m
 % Get average crustal values to use with with Zhu and Kanamori math
 [rhoav, vsav, vpav, xiav, phiav, etaav] =  hk_average_crust(...
     rho, vs, vp, xi, phi, eta, z, zmoh); 
