@@ -9,6 +9,7 @@ clear;
 clc; 
 restoredefaultpath; 
 
+cd .. % Assuming we are starting in hk_xi_invert_NOTDONE, we need to get to root folder. 
 addpath("elastic/"); 
 addpath("hk_calculation/"); 
 addpath("hk_calculation/"); 

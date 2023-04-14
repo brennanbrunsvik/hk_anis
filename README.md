@@ -1,10 +1,10 @@
 # Make HK stacks that incorporate radial anisotropy
-Note: As of 2023/04/13, this repository is made public. However, I need to clean it up, push a last commit with some edits, etc. If you are trying to access this and still see this message, please contact me. 
 
-Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper XXXXXXXXXXXXXXXXXXXXXX. Please feel free to contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. We would be very happy if somebody wanted to convert all of this to Python, or a fast compiled language. 
- 
-% hk_figs_station_paper.m shows an examples of making anisotropic HK stacks for a particular station. It makes some figures used in the paper. 
+Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper XXXXXXXXXXXXXXXXXXXXXX. Please feel free to contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. We would be very happy if somebody wanted to convert all of this to Python. 
 
-% hk_error_paper.m makes some figures that show, analytically, how much error can be induced from ignoring anisotropy. 
+- hk_ears.m: Make anisotropic HK stack on receiver functions from the IRIS-EARS dataset. Can loop over many stations, or just do one station. You can modify this to use receiver functions from any station. 
+-- hk_ta_kmsc.m: Temporary, make anisotropic HK stack for a unique format station, data output was from our MCMC work. 
 
-hk_ears.m: Make anisotropic HK stack on receiver functions from the IRIS-EARS dataset. Can loop over many stations, or just do one station. 
+- hk_error_ray_param.m: Calculate amount of error for a receiver function as a function of ray parameter. 
+
+Note that synthetic receiver functions are not part of this package. It would be too much work to get our synthetic forward modeling working on other people's computers, but if you have a way to calculate your own synthetic receiver functions, you can definitely use this package to make anisotropic HK stacks on them! 
