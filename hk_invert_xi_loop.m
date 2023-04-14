@@ -1,3 +1,7 @@
+% NOTE: this does not yet work reliably. As of now (2023/04/14), I don't
+% recomend using it unless you are super careful about quality of data and
+% results. It is just in a test state as of now and not complete. 
+
 % Do anisotropic HK stacks for a particular station. 
 % Make figures for use in the paper. 
 
