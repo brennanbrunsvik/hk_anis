@@ -16,7 +16,13 @@ addpath('~/Documents/repositories/Base_code/colormaps/colormaps_ander_biguri');
 
 %% Prepare model. 
 sta_name = 'AE.X16A'; 
-f = load("models/download_rfs/Ears/gauss_2.5/"+sta_name+"/rfArr.mat"); 
+try 
+    % Put your appropriate path here. 
+    f = load("/Volumes/extDrive/offload/Users/brennanbrunsvik/Documents/repositories/hk_anis/models/download_rfs/Ears/gauss_2.5/"+sta_name+"/rfArr.mat"); 
+catch
+    fprintf('Tried loading from extDrive. Did not work. Trying from models/download_rfs/Ears/...\n')
+    f = load("models/download_rfs/Ears/gauss_2.5/"+sta_name+"/rfArr.mat"); 
+end
 rf = f.rf; tt = f.tt; rayParmSecDeg = f.rayParmSecDeg; incAngP = f.incAngP; 
 lat = f.stla; lon = f.stlo; 
 rayp = rayParmSecDeg; 
