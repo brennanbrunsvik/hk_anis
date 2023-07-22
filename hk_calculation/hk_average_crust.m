@@ -6,16 +6,19 @@ function [rhoav, vsav, vpav, xiav, phiav, etaav] = hk_average_crust(...
 
 % Do Earth flattening transformation to slightly improve accuracy. 
 % See Peter Shearer Intro Seismology textbook. 
-a = 6371; % Earth radius
-zflt = @(z)-a .* log((a-z)./a); 
-vflt = @(z,v)a./(a-z) .* v; 
-
-z_orig    = z; 
-% zmoh_orig = zmoh; 
-z         = zflt(z   ); 
-zmoh      = zflt(zmoh); 
-vs        = vflt(z_orig, vs); 
-vp        = vflt(z_orig, vp); 
+earth_flattening = true;  
+if earth_flattening; 
+    a = 6371; % Earth radius
+    zflt = @(z)-a .* log((a-z)./a); 
+    vflt = @(z,v)a./(a-z) .* v; 
+    
+    z_orig    = z; 
+    % zmoh_orig = zmoh; 
+    z         = zflt(z   ); 
+    zmoh      = zflt(zmoh); 
+    vs        = vflt(z_orig, vs); 
+    vp        = vflt(z_orig, vp); 
+end
 
 % Figure out layer spacing and which layers are in the crust. 
 isCrust = z <= zmoh; 
