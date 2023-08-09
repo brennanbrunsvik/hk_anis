@@ -8,3 +8,5 @@
 *itt
 **/results/**.mat
 models/download_rfs/Ears/**
+**/**/hk_summary.mat
+**/**boot_res*
