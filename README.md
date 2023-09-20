@@ -1,6 +1,8 @@
 # Make HK stacks that incorporate radial anisotropy
 
-This repository will be re-cleaned and organized upon acceptance of the corresponding manuscript. Right now, some script names may not be as expected. If you are trying to use this repository before acceptance of the manuscript, then you can run example_workflow.m to reproduce some figures from the paper. I anticipate that the folders "hk_calculation" and "elastic" will be the two that people need to run anisotropic HK stacks on their own data.  
+To see this in action, download the package and run "example_workflow.m". 
+
+This repository will be re-cleaned and organized upon acceptance of the corresponding manuscript. Right now, some script names may not be as expected. I anticipate that the folders "hk_calculation" and "elastic" will be the two that people need to run anisotropic HK stacks on their own data.  
 
 Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper "Radial anisotropy in receiver function H−κ stacks" by Brennan Brunsvik and Zach Eilon, submitted to SRL on 2023/04/13. Please feel free to contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. We would be very happy if somebody wanted to convert this to Python. 
 
