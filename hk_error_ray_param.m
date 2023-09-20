@@ -69,11 +69,13 @@ caxis(clim_man);
 colormap(cmap_cust); 
 ylabel('p (s/degree)'); 
 title('Average', 'fontweight', 'normal'); 
+text(0, 1.065, '(a)', 'units', 'normalized')
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  caxis(clim_man); 
 contourf(kVec', rayp_all, toabs(p_change_t_ps'), clines); 
 caxis(clim_man); 
 title('Ps', 'fontweight', 'normal');  
+text(0, 1.065, '(b)', 'units', 'normalized')
 
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  caxis(clim_man); 
@@ -82,6 +84,7 @@ caxis(clim_man);
 xlabel('\kappa'); 
 ylabel('p (s/degree)'); 
 title('PpSs, PsPs', 'fontweight', 'normal'); 
+text(0, 1.065, '(c)', 'units', 'normalized')
 
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  
@@ -89,6 +92,8 @@ contourf(kVec', rayp_all, toabs(p_change_t_ppps'), clines);
 caxis(clim_man); 
 xlabel('\kappa'); 
 title('PpPs', 'fontweight', 'normal'); 
+text(0, 1.065, '(d)', 'units', 'normalized')
+
 
 cbar = colorbar(); 
 set(cbar.Label, 'String', 'H error percent'); 
@@ -139,11 +144,13 @@ caxis(clim_man);
 colormap(cmap_cust); 
 ylabel('p (s/degree)'); 
 title('Average', 'fontweight', 'normal'); 
+text(0, 1.07, '(a)', 'units', 'normalized')
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  caxis(clim_man); 
 contourf(kVec', rayp_all, toabs(p_change_t_ps'), clines); 
 caxis(clim_man); 
 title('Ps', 'fontweight', 'normal');  
+text(0, 1.07, '(b)', 'units', 'normalized')
 
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  caxis(clim_man); 
@@ -152,6 +159,7 @@ caxis(clim_man);
 xlabel('\kappa'); 
 ylabel('p (s/degree)'); 
 title('PpSs, PsPs', 'fontweight', 'normal'); 
+text(0, 1.07, '(c)', 'units', 'normalized')
 
 
 nexttile(); box on; set(gca, 'LineWidth', 1.5);  
@@ -159,6 +167,7 @@ contourf(kVec', rayp_all, toabs(p_change_t_ppps'), clines);
 caxis(clim_man); 
 xlabel('\kappa'); 
 title('PpPs', 'fontweight', 'normal'); 
+text(0, 1.07, '(d)', 'units', 'normalized')
 
 cbar = colorbar(); 
 set(cbar.Label, 'String', 'H error percent'); 
@@ -170,7 +179,8 @@ cbar_pos(1) = cbar_pos(1) + 0.03;
 set(cbar, 'Position', cbar_pos); 
 caxis(clim_man); 
 
-
-exportgraphics(gcf, sprintf('figs/timing_error_xi%1.2f.jpeg', xi), 'Resolution', 600); 
+set(gcf, 'Renderer', 'painters'); 
+exportgraphics(gcf, sprintf('figs/timing_error_xi%1.2f.jpeg', xi), ...
+    'Resolution', 600); 
 
 

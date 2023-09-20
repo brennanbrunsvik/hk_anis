@@ -14,23 +14,35 @@ kBounds = [1.6, 2.1];
 sta_name_ignore = ["TA.N48A", "TA.L61A"]; 
 % sta_name_ignore = ["ASDFASDF"]; 
 stacount = 0; 
+reason_skip = zeros(length(sta_name_all),1); 
+bounds_skip = 0; 
 for ista=1:length(sta_name_all); 
     sta_name = sta_name_all(ista); 
     try
         hk_summary = load(sprintf('results/%s/hk_summary.mat', sta_name)); 
     catch
         continue
-%         fprintf('Could not load results for station %s', sta_name)
+        fprintf('Could not load results for station %s', sta_name)
     end
 
     % Manually skip some stations. 
+    if any(sta_name == sta_name_ignore)
+        disp('Skipping: ignore list')
+    end
     skip = any(sta_name == sta_name_ignore); 
 
     % Correct run version. 
     skip = skip | (~strcmp(hk_summary.run_version, 'version_1')); 
+    if (~strcmp(hk_summary.run_version, 'version_1'))
+        disp('Skip: wrong version')
+    end
 
     % Have a minimum number of receiver functions. 
     skip = skip | (hk_summary.n_rf < nrf_min); 
+    if (hk_summary.n_rf < nrf_min)
+        disp('Skip: nrf min')
+    end
+
 
     % Check for out of bounds
     skip = skip | ...
@@ -38,12 +50,22 @@ for ista=1:length(sta_name_all);
         any([hk_summary.hmax, hk_summary.hmaxiso] > hBounds(2)) | ...;  
         any([hk_summary.kmax, hk_summary.kmaxiso] < kBounds(1)) | ...;  
         any([hk_summary.kmax, hk_summary.kmaxiso] > kBounds(2));  
-
+%     if any([hk_summary.hmax, hk_summary.hmaxiso] < hBounds(1)) | ...
+%         any([hk_summary.hmax, hk_summary.hmaxiso] > hBounds(2)) | ...;  
+%         any([hk_summary.kmax, hk_summary.kmaxiso] < kBounds(1)) | ...;  
+%         any([hk_summary.kmax, hk_summary.kmaxiso] > kBounds(2))
+%         fprintf('Skip due to bounds %s. H: %3.3f, K: %3.3f\n', sta_name, hk_summary.hmax, hk_summary.kmax )
+%         bounds_skip = bounds_skip + 1; 
+%     end
 
     % If h or k changed too much, then jumped between local minima. Ignore that result. 
     skip = skip | ...
         (15 < abs((hk_summary.hmax - hk_summary.hmaxiso) / hk_summary.hmax * 100)) | ...
         (15 < abs((hk_summary.kmax - hk_summary.kmaxiso) / hk_summary.kmax * 100)); 
+    if (15 < abs((hk_summary.hmax - hk_summary.hmaxiso) / hk_summary.hmax * 100)) | ...
+        (15 < abs((hk_summary.kmax - hk_summary.kmaxiso) / hk_summary.kmax * 100))
+        disp('Skip: Large change. ') 
+    end
 
     if skip; 
         continue; 
@@ -67,6 +89,8 @@ for ista=1:length(sta_name_all);
     summary(stacount).sta_name    = sta_name              ;
 
 end
+disp('Number skipped due to being out of bounds: ')
+disp(bounds_skip)
 
 %%
 
@@ -102,7 +126,10 @@ lalim = [27 ,  46];
 figure(1); clf; hold on; set(gcf, 'pos', [297 391 495 486]); 
 tiledlayout(2, 2, 'TileSpacing','compact'); 
 
+letter_shift = 1.07; 
+letter_shift_left = -0.14;
 nexttile(); hold on; 
+text(letter_shift_left, letter_shift, '(a)', 'units', 'normalized', 'fontsize', 12)
 [stax, stay] = fun_mapbackground(lolim, lalim, lon, lat); 
 scatter(stax, stay , scatter_size, h, 'filled'); 
 colorbar(); 
@@ -110,6 +137,7 @@ clim(clims);
 title('H (km)', 'fontweight', 'normal');
 
 nexttile(); hold on; 
+text(letter_shift_left, letter_shift, '(b)', 'units', 'normalized', 'fontsize', 12)
 [stax, stay] = fun_mapbackground(lolim, lalim, lon, lat); 
 scatter(stax, stay, scatter_size, xi, 'filled');
 % scatter(lon, lat , scatter_size, hiso, 'filled');
@@ -118,6 +146,7 @@ colorbar();
 title('\xi', 'fontweight', 'normal');
 
 nexttile(); hold on; 
+text(letter_shift_left, letter_shift, '(c)', 'units', 'normalized', 'fontsize', 12)
 [stax, stay] = fun_mapbackground(lolim, lalim, lon, lat); 
 scatter(stax, stay, scatter_size, dh_perc, 'filled');
 colorbar(); 
@@ -125,6 +154,7 @@ title('Change in H, percent', 'fontweight', 'normal');
 
 
 nexttile(); hold on; 
+text(letter_shift_left, letter_shift, '(d)', 'units', 'normalized', 'fontsize', 12)
 title('Percent change in H versus \xi', 'fontweight', 'normal');
 scatter(xi, dh_perc); 
 % text(xi, dh_perc, sta_name); % Use these to see which stations are weird 
@@ -138,4 +168,5 @@ plot(xi, dh_pred, 'linewidth', 1.5);
 
 fprintf('Solved slope: change from 1 to 1.01 and change the h solution percent by %3.3f\n', dhp_xi/100)
 
+set(gcf, 'Renderer', 'painters'); 
 exportgraphics(gcf, 'figs/hk_from_mcmc_models.pdf', 'ContentType', 'vector'); 
