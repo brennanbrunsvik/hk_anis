@@ -2,7 +2,8 @@ function [velocity] = hk_christof_radial_anis(...
     vs, vp, xi, phi, eta, rho, angAll);
 % brb2022.02.25
 % This version of code uses explicit expressions for vsv, vsh, and vp from
-% the Mavko Rock Physics Handbook. It does not solve for ray orientations. 
+% the Mavko Rock Physics Handbook. It does not solve for ray orientations,
+% which would take much more time. 
 % vs, vp: Isotropic portion of velocity
 % xi    : radial s anisotropy
 % phi   : radial p anisotropy

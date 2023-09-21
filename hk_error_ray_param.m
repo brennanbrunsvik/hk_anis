@@ -1,5 +1,6 @@
-% IN PROGRESS, not yet documented. 
-% Make plots to show analytical error from ignoring anisotropy. 
+% Make figures showing how much HK stack error depends on anisotropy. May
+% need some modifications to work on your computer, especially in terms of
+% paths and choosing your colomaps. 
 
 clear; 
 clc; 
@@ -19,7 +20,6 @@ hNum = 160;
 rayp_all = linspace(4, 9, raypNum); 
 rayp_conv = @(r)r/(6371 * 2 * pi/360); 
 vs = 3.8 .* ones(1);
-% vp = 1.75 .* ones(size(rayp));
 rho = 2.6 .* ones(1);
 xi = 1.15; 
 

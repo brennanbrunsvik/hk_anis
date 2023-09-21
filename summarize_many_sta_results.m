@@ -1,6 +1,11 @@
+% If you succesfully ran HK stacks on many stations, this is a starting
+% script to show some results at many of those stations. You will need to
+% change some paths. 
+
 fstainfo ='/Users/brennanbrunsvik/Documents/UCSB/ENAM/THBI_ENAM/data/results_compiled/compiled_results_standard.mat'; % This .mat file has all stations with results used to make 3D mcmc results. Generated from script: /Users/brennanbrunsvik/Documents/UCSB/ENAM/THBI_ENAM/functions/plotting/many_stas/a1_collate_sta_models.m
 addpath('/Users/brennanbrunsvik/MATLAB/m_map'); % m_map for plotting. 
 addpath('/Users/brennanbrunsvik/MATLAB/borders'); % For getting state borders. 
+addpath('./misc')
 sta_summary = load(fstainfo).mdls; 
 sta_name_all = string(sta_summary.nwk) + "." + string(sta_summary.sta); 
 

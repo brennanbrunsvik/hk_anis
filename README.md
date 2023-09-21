@@ -1,15 +1,14 @@
 # Make HK stacks that incorporate radial anisotropy
 
-To see this in action, download the package and run "example_workflow.m". 
+To see this in action, download the package and run "example_workflow_for_github.m". 
 
-This repository will be re-cleaned and organized upon acceptance of the corresponding manuscript. Right now, some script names may not be as expected. I anticipate that the folders "hk_calculation" and "elastic" will be the two that people need to run anisotropic HK stacks on their own data.  
+Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper Brunsvik and Eilon 2023, SRL, "Radial anisotropy in receiver function H−κ stacks". Contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. 
 
-Take seismic receiver functions and make HK stacks, while accounting for radial anisotropy. This package accompanies the paper "Radial anisotropy in receiver function H−κ stacks" by Brennan Brunsvik and Zach Eilon, submitted to SRL on 2023/04/13. Please feel free to contact me (brennanbrunsvik@ucsb.edu) if you need any help or would like my collaboration. We would be very happy if somebody wanted to convert this to Python. 
-
-- hk_ears.m: Make anisotropic HK stack on receiver functions from the IRIS-EARS dataset. Can loop over many stations, or just do one station. You can modify this to use receiver functions from any station. 
-  - hk_ta_kmsc.m: Temporary, make anisotropic HK stack for a unique format station, data output was from our MCMC work. 
-  - Asside from possibly TA KMSC, we do not include the receiver function waveforms from IRIS-EARS. Instead, include the code to download it. For simple instructions, see models/download_rfs/README.txt. 
-
+- example_workflow_for_github.m: This is your starting point to understand the repository. Run it. Make both anisotropic and isotropic receiver functions for station TA KMSC. Example_workflow_complex.m has some more complicated options to handle more stations than just TA KMSC. 
 - hk_error_ray_param.m: Calculate amount of error for a receiver function as a function of ray parameter. 
+- hk_ears_bootstrap.m: Do bootstrapping to test uncertainty of HK stacks with station TA KMCS. 
+- summarize_many_sta_results.m: If you were to run this on many stations, this script can be your starting place to plot many of those results in map view. 
+- hk_calculation/ has various files I used for calculating HK stacks. 
+- elastic/ has files used to calculate things like velocities of the model. 
 
-Note that synthetic receiver functions are not part of this package. It would be too much work to get our synthetic forward modeling working on other people's computers, but if you have a way to calculate your own synthetic receiver functions, you can definitely use this package to make anisotropic HK stacks on them! 
+Synthetic receiver functions are not part of this package. It would be too much work to get our synthetic forward modeling working on other people's computers. You need to use the example receiver function included here, or provide your own. 

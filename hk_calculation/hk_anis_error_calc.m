@@ -17,10 +17,9 @@ function [p_change, p_change_t_ps, p_change_t_ppss, p_change_t_ppps,...
         options.rfinterp = 'cubic'; 
         options.take_mean = true; 
     end
-% Modified version of HK anis, designed to analytically calculate errors
+% Modified version of hk_anis, designed to analytically calculate errors
 % from ignoring anisotropy. 
 % Does not actually make HK stack. 
-% TODO describe inputs and outputs. 
 
 % Handle input values. 
 phase_wts = options.phase_wts / sum(options.phase_wts); % Normalize in case these didn't sum to 1 

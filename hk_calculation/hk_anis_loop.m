@@ -18,7 +18,7 @@ function [Amap, hVec, kVec, t_pred] = hk_anis_loop(...
         options.normalize = true; 
     end
 % Wrapper to loop over each receiver function, make anisotropic 
-% HK stacks, then sum them. 
+% HK stacks, then sum them. It is just a loop version of hk_anis. 
 
 nrf = size(rf, 2); 
 AmapAll = zeros(nrf,    options.hNum, options.kNum); % Energy (amplitude) map for HK Stack. 

@@ -1,8 +1,7 @@
 function [rhoav, vsav, vpav, xiav, phiav, etaav] = hk_average_crust(...
     rho, vs, vp, xi, phi, eta, z, zmoh)
 % If you have a complex crustal model, this make average crustal values
-% that are compatible with the Zhu and Kanamori 2000 formulae. 
-% TODO describe inputs and outputs. 
+% that are compatible with the Zhu and Kanamori 2000 formula. 
 
 % Do Earth flattening transformation to slightly improve accuracy. 
 % See Peter Shearer Intro Seismology textbook. 

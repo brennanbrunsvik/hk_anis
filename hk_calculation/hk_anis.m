@@ -45,7 +45,8 @@ vpAn  = vp_out(1,:);
 
 %%% Commented out here is a (slower) option to do the full Christoffel
 %%% matrix solution for each ray. We don't need ray angles, so this isn't
-%%% needed for now. 
+%%% needed for now. If you would like to get anisotropic ray angles, you
+%%% can modify this commented code. 
 % % % % % vsvAn = zeros(1, options.kNum); % Row vector. h is collumn vector. 
 % % % % % vpAn  = zeros(1, options.kNum); 
 % % % % % if ~ ((xi==1) && (phi==1) && (eta==1)) ; % Only use time consuming Christoffel equations if there is anisotropy. 
@@ -78,10 +79,6 @@ t_pred = zeros(3, size(t_ps,1), size(t_ps,2) );
 t_pred(1,:,:) = t_ps; t_pred(2,:,:) = t_ppps; t_pred(3,:,:) = t_ppss; 
 
 %% sum weighted contributions from each phase type
-% Amap =  phase_wts(1).*interp1(tt,RF,t_ps) ...
-%       + phase_wts(2).*interp1(tt,RF,t_ppps) ...
-%       - phase_wts(3).*interp1(tt,RF,t_ppss,[],0); % negative phase!
-
 Amap =  phase_wts(1).*interp1(tt,RF,t_ps, options.rfinterp) ...
       + phase_wts(2).*interp1(tt,RF,t_ppps, options.rfinterp) ...
       - phase_wts(3).*interp1(tt,RF,t_ppss,options.rfinterp,0); % negative phase!
