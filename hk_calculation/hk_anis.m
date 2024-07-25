@@ -15,7 +15,7 @@ function [Amap, hVec, kVec, t_pred] = hk_anis(...
         options.kNum = 201; 
         options.hNum = 200; 
         options.ifplot = false; 
-        options.rfinterp = 'cubic'; 
+        options.rfinterp = 'linear'; 
     end
 % Make an anisotropic HK stack. 
 % TODO describe inputs and outputs. 

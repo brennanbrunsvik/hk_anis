@@ -10,3 +10,4 @@
 models/download_rfs/Ears/**
 **/**/hk_summary.mat
 **/**boot_res*
+hk_synthetic_part_of_paper
