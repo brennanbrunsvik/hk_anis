@@ -9,6 +9,7 @@ restoredefaultpath;
 
 addpath("./elastic/"); 
 addpath("./hk_calculation/"); 
+addpath("./hk_utils/"); 
 
 run_version = 'version_1'; % If you want to keep track of a "version" of the code. 
 res_export = 200; % Choose base figure resolution DPI
@@ -61,56 +62,13 @@ for ista = 1:length(sta_name_all);
         rho, vs, vp, xi, phi, eta, z, zmoh);  
     
     %% Remove bad receiver functions. 
-    % Remove those that have small zero-lag cross-correlation to other receiver functions. 
-    % cross correlation parameters. These don't need to be perfect. It's just removing really bad receiver functions. 
-    % First row: Handle bad parent pulse. Second is for whole receiver function. 
-    % First collumn: Cutoff for noramlized average cross correlation to other
-    % receiver functions. Second collumn: Time window (absolute value)
-    
-    fprintf("\nCleaning receiver functions with correlation of\n" + ...
-        "%1.2f from -%1.2f to -%1.2f seconds and \n%1.2f from -%1.2f to %1.2f seconds\n", ...
-        acparms(1,1), acparms(1,2), acparms(1,2), acparms(2,1), acparms(2,2), acparms(2,2))
-    
-    fprintf('\nStarting with %1.0f receiver functions.\n', size(rf,2))
-    
-    figure(61); clf; hold on; 
-    subplot(2,1,1); hold on; 
-    title('All')
-    plot(tt, rf); 
-    xlim([-5, 40]); 
-    
-    for iacremove = 1:2; % Loop over checking the first few seconds of the receiver function, and the whole receiver function. 
-        nrf = size(rf,2); % Number of receiver functions. Changes with each iacremove
-        ac = nan(nrf, nrf); % correlation matrix. 
-        twin = abs(tt) < acparms(iacremove,2); % Window within which is the parent pulse, to cross-correlate.  
-        ac_cutoff = acparms(iacremove,1); % Get parameters for this iacremove. 
-        for irf = 1:nrf; % Loop over each receiver function
-            for jrf = 1:nrf; % Again loop over each receiver function. This is fast enough and done not often so don't worry about taking advantage of symmetry
-                rfi = rf(twin,irf); 
-                rfj = rf(twin,jrf); 
-                ac(irf, jrf) = rfi' * rfj ./ ...
-                    ( sqrt(rfi' * rfi)*sqrt(rfj' * rfj) ); % cross-correlation. 
-            end
-        end
-        acs = sum(ac) ./ length(ac); % Cross-correlation sum. Normalize it. 
-        ac_keep = acs > ac_cutoff; % Only keep if there is high-enough average cross-correlation. 
-        
-        rayp     = rayp(:,ac_keep     ); % Remove ray parameter for receiver functions we aren't keeping. 
-        rf       = rf  (:,ac_keep     ); % Remove bad receiver functions. 
-    end
-    
-    n_rf = size(rf,2)
-    fprintf('\nEnding with %1.0f receiver functions.\n', n_rf)
-    
-    
+    [rf, ac_keep] = receiver_function_QC_correlation(rf, tt, 'acparms', acparms); 
+    n_rf = size(rf,2); 
+    rayp     = rayp(:,ac_keep); % Remove ray parameter for receiver functions we aren't keeping. 
+
     if ~ exist(sprintf('./results/%s', sta_name)); 
         mkdir(sprintf('./results/%s', sta_name)); 
     end
-    
-    subplot(2,1,2); hold on; 
-    title('Kept'); 
-    plot(tt, rf); 
-    xlim([-5, 40]); 
     
     % Sort by ray parameter. Makes plotting more obvious. 
     [rayp, sortp] = sort(rayp); 
