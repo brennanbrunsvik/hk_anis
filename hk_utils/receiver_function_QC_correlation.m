@@ -8,7 +8,8 @@ function [rf, ac_keep]=receiver_function_QC_correlation(rf, tt, options)
         options.noise_removal_style = 'cluster'; % "cluster" or "average_dist". clustering (with dbscan), or average dissimilarity to other receiver functions. 
     end
     acparms = options.acparms; 
-
+    % rf: Receiver functions. ntt x nrf. 
+    % tt: Time. ntt x 1. 
     % Remove those that have small zero-lag cross-correlation to other receiver functions. 
     % cross correlation parameters. These don't need to be perfect. It's just removing really bad receiver functions. 
     % If using "average_dist": 
@@ -17,6 +18,10 @@ function [rf, ac_keep]=receiver_function_QC_correlation(rf, tt, options)
     %     receiver functions. Second collumn: Time window (absolute value)
     % If using "cluster": 
     %     No input parameters needed as of 2024/09/16
+
+    if size(tt,1) ~= size(rf,1); 
+        error('brb2024/09/16: Input sizes are not correct. rf: %dx%d, tt: %dx%d', size(rf, 1), size(rf, 2), size(tt, 1), size(tt, 2) );
+    end
 
     fprintf('\nStarting to clean receiver functions.\n')
     fprintf('\nStarting with %1.0f receiver functions.\n', size(rf,2))
@@ -45,24 +50,21 @@ function [rf, ac_keep]=receiver_function_QC_correlation(rf, tt, options)
         for ii = 1:size(dist,1); 
             dist(ii,ii) = 0; 
         end 
+
     
         % Determine clustering parameters. 
-        epsilon = std(dist(:)); % Standard deviation of similarities. If a receiver function cannot be reached within 1 std from the cluster, it seems reasonable to call it noise. 
-        minpts = ceil(.3 * nrf); % 30% of number of receiver functions. From Petruska and Eilon 2022 GGG. We just get one cluster this way, which is good for separating nosie.  
+        forstd = dist(~eye(size(dist))); % Don't include the arbitarary 0 in distance mean calculation
+        epsilon = 2*std(forstd); % Standard deviation of similarities. If a receiver function cannot be reached within 1 std from the cluster, it seems reasonable to call it noise. 
+        minpts = ceil(.1 * nrf); % 30% of number of receiver functions. From Petruska and Eilon 2022 GGG. We just get one cluster this way, which is good for separating nosie.  
+        
         [dbres] = dbscan(dist, epsilon, minpts, 'Distance', 'precomputed'); % DBSCAN clustering. 
         unique_dbres = unique(dbres); % Number of clusters. -1 is noise. 
-    
-        fprintf('Number of unique clusters, including noise: %1.0f.\n', length(unique_dbres))
-    
-        % % % figure(2); clf; hold on; 
-        % % % cmap = turbo(length(unique(dbres))); 
-        % % % rf_win = rf(twin,:); 
-        % % % for irf = 1:nrf; 
-        % % %     plot(tt(twin), rf_win(:,irf), 'color', cmap( find(dbres(irf)==unique_dbres ),: ))
-        % % % end
-    
-        % Remove bad receiver functions
         ac_keep = dbres ~= -1; % Keep everything that was not marked as noise. 
+        ratio_keep = sum(ac_keep) ./ length(ac_keep); 
+
+        fprintf('Number of unique clusters, including noise: %1.0f.\n', length(unique_dbres))
+
+
         rf = rf(:, ac_keep);        
 
     elseif strcmp(options.noise_removal_style, 'average_dist'); 
