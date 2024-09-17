@@ -62,7 +62,8 @@ for ista = 1:length(sta_name_all);
         rho, vs, vp, xi, phi, eta, z, zmoh);  
     
     %% Remove bad receiver functions. 
-    [rf, ac_keep] = receiver_function_QC_correlation(rf, tt, 'acparms', acparms); 
+    % [rf, ac_keep] = receiver_function_QC_correlation(rf, tt, 'acparms', acparms, 'noise_removal_style','average_dist'); % Uses a simpler receiver function removal approach. Same as described in Brunsvik and Eilon 2024. 
+    [rf, ac_keep] = receiver_function_QC_correlation(rf, tt, 'noise_removal_style','cluster'); % Includes clustering for removing noisy receiver functions
     n_rf = size(rf,2); 
     rayp     = rayp(:,ac_keep); % Remove ray parameter for receiver functions we aren't keeping. 
 
